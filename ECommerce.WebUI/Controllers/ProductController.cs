@@ -1,4 +1,5 @@
 ﻿using ECommerce.Business.Abstract;
+using ECommerce.DataAccess.Concrete.EFEntityFramework;
 using ECommerce.Entities.Models;
 using ECommerce.WebUI.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,41 +17,74 @@ namespace ECommerce.WebUI.Controllers
             _productService = productService;
         }
 
-        bool s = false;
-
         // GET: ProductController
+        static bool IsOrderByProductName = false;
+        static bool IsOrderByProductPrice = false;
+
+        static int pa = 1;
+        static int cate = 0;
+
         public async Task<ActionResult> Index(int page = 1, int category = 0)
         {
+            if (pa != 1 || cate != 0)
+            {
+                page = pa;
+                category = cate;
+
+                pa = 1;
+                cate = 0;
+            }
             var products = await _productService.GetAllByCategory(category);
 
             int pageSize = 10;
 
             ProductListViewModel model;
 
-            if (s)
+
+            model = new ProductListViewModel
             {
-                model = new ProductListViewModel
-                {
-                    Products = products.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                    CurrentCategory = category,
-                    PageCount = ((int)Math.Ceiling(products.Count / (double)pageSize)),
-                    PageSize = pageSize,
-                    CurrentPage = page
-                };
+                Products = products.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                CurrentCategory = category,
+                PageCount = ((int)Math.Ceiling(products.Count / (double)pageSize)),
+                PageSize = pageSize,
+                CurrentPage = page
+            };
+
+            var sortProducts = ProductNameSortOrNotSort(model.Products, IsOrderByProductName);
+            model.Products = sortProducts;
+
+            var sortProductsPrice = ProductPriceSortOrNotSort(model.Products, IsOrderByProductPrice);
+            model.Products = sortProductsPrice;
+
+            return View(model);
+        }
+
+        public List<Product> ProductNameSortOrNotSort(List<Product> products, bool isSortProductName)
+        {
+            if (isSortProductName)
+            {
+                products = products.OrderBy(s => s.ProductName).ToList();
             }
             else
             {
-                model = new ProductListViewModel
-                {
-                    Products = products.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                    CurrentCategory = category,
-                    PageCount = ((int)Math.Ceiling(products.Count / (double)pageSize)),
-                    PageSize = pageSize,
-                    CurrentPage = page
-                };
+                products = products.OrderByDescending(s => s.ProductName).ToList();
             }
-            return View(model);
+            return products;
         }
+
+        public List<Product> ProductPriceSortOrNotSort(List<Product> products, bool isSortProductPrice)
+        {
+            if (isSortProductPrice)
+            {
+                products = products.OrderBy(s => s.UnitPrice).ToList();
+            }
+            else
+            {
+                products = products.OrderByDescending(s => s.UnitPrice).ToList();
+            }
+            return products;
+        }
+
 
         //public async Task<ActionResult> Index2()
         //{
@@ -146,27 +180,40 @@ namespace ECommerce.WebUI.Controllers
             }
         }
 
-        public async Task<IActionResult> ProductOrderBy(int page = 1, int category = 0)
+        public async Task<IActionResult> ProductOrderBy(int pagee = 1, int categoryy = 0)
         {
-            int pageSize = 10;
+            IsOrderByProductName = !IsOrderByProductName;
+            pa = pagee;
+            cate = categoryy;
+            //int pageSize = 10;
 
-            var allProduct = await _productService.GetAllByCategory(category);
+            //var allProduct = await _productService.GetAllByCategory(category);
 
-            var data = allProduct.OrderBy(x => x.ProductName).ToList();
+            //var data = allProduct.OrderBy(x => x.ProductName).ToList();
 
-            var viewModel = new ProductListViewModel
-            {
-                Products = data.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                CurrentCategory = category,
-                PageCount = ((int)Math.Ceiling(data.Count / (double)pageSize)),
-                PageSize = pageSize,
-                CurrentPage = page
-                //Products = data
-            };
+            //var viewModel = new ProductListViewModel
+            //{
+            //    Products = data.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+            //    CurrentCategory = category,
+            //    PageCount = ((int)Math.Ceiling(data.Count / (double)pageSize)),
+            //    PageSize = pageSize,
+            //    CurrentPage = page
+            //    //Products = data
+            //};
 
-            return View("Index", viewModel);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> ProductHightToLower(int pagee = 1, int categoryy = 0)
+        {
+            IsOrderByProductPrice = !IsOrderByProductPrice;
+            pa = pagee;
+            cate = categoryy;
+
+            return RedirectToAction("Index");
         }
     }
+
 
     //public IActionResult ProductOrderByDecending()
     //{

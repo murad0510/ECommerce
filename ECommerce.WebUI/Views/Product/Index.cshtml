@@ -2,9 +2,17 @@
 
 <table class="table">
     <thead>
-        <button class="btn btn-xs btn-success">
-            <a asp-action="ProductOrderBy" asp-controller="Product" asp-route-page="@Model.CurrentPage" asp-route-category="@Model.CurrentCategory">A-Z</a>
-        </button>
+        <a asp-action="ProductOrderBy" asp-controller="Product" asp-route-pagee="@Model.CurrentPage" asp-route-categoryy="@Model.CurrentCategory">
+            <button id="ProductNameSort" class="btn btn-xs btn-success">
+                A-Z
+            </button>
+        </a>
+
+        <a asp-action="ProductHightToLower" asp-controller="Product" asp-route-pagee="@Model.CurrentPage" asp-route-categoryy="@Model.CurrentCategory">
+            <button id="ProductPriceSort" class="btn btn-xs btn-success">
+                Hight To Lower
+            </button>
+        </a>
         <tr>
             <th> ProductName</th>
             <th>UnitPrice</th>
@@ -27,19 +35,29 @@
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success"
-                    href="/Cart/AddToCart?productId=@item.ProductId&page=@Model.CurrentPage&category=@Model.CurrentCategory"
-                    >Add To Cart</a>
+                       href="/Cart/AddToCart?productId=@item.ProductId&page=@Model.CurrentPage&category=@Model.CurrentCategory">Add To Cart</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+@* <script>
+    let data = document.getElementById("ProductNameSort");
+    let s = false;
+    function ProductNameSort(){
+        if (s) {
+            data.innerHTML = "Z-A";
+        }
+        else {
+            data.innerHTML = "A-Z";
+        }
+        s = !s;
+    }
+</script> *@
+
 <product-list-pager current-category="@Model.CurrentCategory"
-  current-page="@Model.CurrentPage"
-  page-count="@Model.PageCount"
-  page-size="@Model.PageSize"
-
->
-
+                    current-page="@Model.CurrentPage"
+                    page-count="@Model.PageCount"
+                    page-size="@Model.PageSize">
 </product-list-pager>

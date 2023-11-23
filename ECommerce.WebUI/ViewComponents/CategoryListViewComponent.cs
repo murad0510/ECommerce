@@ -18,6 +18,9 @@ namespace ECommerce.WebUI.ViewComponents
         {
             var categories = _categoryService.GetAll().Result;
             var param = HttpContext.Request.Query["category"];
+
+            var param2 = HttpContext.Request.Query["pagee"];
+
             var category=int.TryParse(param, out var categoryId);
             var model = new CategoryListViewModel
             {

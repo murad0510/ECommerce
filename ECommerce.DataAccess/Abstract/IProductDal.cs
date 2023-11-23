@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.DataAccess.Abstract
 {
-    public interface IProductDal:IEntityRepository<Product>
+    public interface IProductDal : IEntityRepository<Product>
     {
     }
 }
