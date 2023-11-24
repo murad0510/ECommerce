@@ -1,16 +1,16 @@
-﻿@model ProductListViewModel
+﻿@model ProductAndSortButtonContextViewModel
 
 <table class="table">
     <thead>
-        <a asp-action="ProductOrderBy" asp-controller="Product" asp-route-pagee="@Model.CurrentPage" asp-route-categoryy="@Model.CurrentCategory">
+        <a onclick="ProductNameSort()" asp-action="ProductOrderBy" asp-controller="Product" asp-route-pagee="@Model.Products.CurrentPage" asp-route-categoryy="@Model.Products.CurrentCategory">
             <button id="ProductNameSort" class="btn btn-xs btn-success">
-                A-Z
+                @Model.NameContext
             </button>
         </a>
 
-        <a asp-action="ProductHightToLower" asp-controller="Product" asp-route-pagee="@Model.CurrentPage" asp-route-categoryy="@Model.CurrentCategory">
+        <a onclick="ProductPriceSort()" asp-action="ProductHightToLower" asp-controller="Product" asp-route-pagee="@Model.Products.CurrentPage" asp-route-categoryy="@Model.Products.CurrentCategory">
             <button id="ProductPriceSort" class="btn btn-xs btn-success">
-                Hight To Lower
+                @Model.PriceContext
             </button>
         </a>
         <tr>
@@ -21,7 +21,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Products)
+        @foreach (var item in Model.Products.Products)
         {
             <tr>
                 <td>
@@ -35,7 +35,7 @@
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success"
-                       href="/Cart/AddToCart?productId=@item.ProductId&page=@Model.CurrentPage&category=@Model.CurrentCategory">Add To Cart</a>
+                       href="/Cart/AddToCart?productId=@item.ProductId&page=@Model.Products.CurrentPage&category=@Model.Products.CurrentCategory">Add To Cart</a>
                 </td>
             </tr>
         }
@@ -44,20 +44,23 @@
 
 @* <script>
     let data = document.getElementById("ProductNameSort");
+    let data = document.getElementById("ProductNameSort");
+
     let s = false;
-    function ProductNameSort(){
-        if (s) {
-            data.innerHTML = "Z-A";
-        }
-        else {
-            data.innerHTML = "A-Z";
-        }
-        s = !s;
+    function ProductNameSort() {
+        data.innerText = "salam";
+        // if (s) {
+        //     data.innerHTML = "Z-A";
+        // }
+        // else {
+        //     data.innerHTML = "A-Z";
+        // }
+        // s = !s;
     }
 </script> *@
 
-<product-list-pager current-category="@Model.CurrentCategory"
-                    current-page="@Model.CurrentPage"
-                    page-count="@Model.PageCount"
-                    page-size="@Model.PageSize">
+<product-list-pager current-category="@Model.Products.CurrentCategory"
+                    current-page="@Model.Products.CurrentPage"
+                    page-count="@Model.Products.PageCount"
+                    page-size="@Model.Products.PageSize">
 </product-list-pager>

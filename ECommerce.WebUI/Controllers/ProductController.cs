@@ -24,6 +24,10 @@ namespace ECommerce.WebUI.Controllers
         static int pa = 1;
         static int cate = 0;
 
+        static string nameContext = "A-Z";
+        static string priceContext = "Hight To Lower";
+
+
         public async Task<ActionResult> Index(int page = 1, int category = 0)
         {
             if (pa != 1 || cate != 0)
@@ -50,13 +54,24 @@ namespace ECommerce.WebUI.Controllers
                 CurrentPage = page
             };
 
+
             var sortProducts = ProductNameSortOrNotSort(model.Products, IsOrderByProductName);
             model.Products = sortProducts;
 
-            var sortProductsPrice = ProductPriceSortOrNotSort(model.Products, IsOrderByProductPrice);
-            model.Products = sortProductsPrice;
+            var sortProductsPrice = ProductPriceSortOrNotSort(sortProducts, IsOrderByProductPrice);
+            if (IsOrderByProductPrice)
+            {
+                model.Products = sortProductsPrice;
+            }
 
-            return View(model);
+            ProductAndSortButtonContextViewModel viewModel = new ProductAndSortButtonContextViewModel
+            {
+                Products = model,
+                NameContext = nameContext,
+                PriceContext = priceContext
+            };
+
+            return View(viewModel);
         }
 
         public List<Product> ProductNameSortOrNotSort(List<Product> products, bool isSortProductName)
@@ -64,10 +79,12 @@ namespace ECommerce.WebUI.Controllers
             if (isSortProductName)
             {
                 products = products.OrderBy(s => s.ProductName).ToList();
+                nameContext = "Z-A";
             }
             else
             {
                 products = products.OrderByDescending(s => s.ProductName).ToList();
+                nameContext = "A-Z";
             }
             return products;
         }
@@ -77,10 +94,12 @@ namespace ECommerce.WebUI.Controllers
             if (isSortProductPrice)
             {
                 products = products.OrderBy(s => s.UnitPrice).ToList();
+                priceContext = "Lower To Hight";
             }
             else
             {
                 products = products.OrderByDescending(s => s.UnitPrice).ToList();
+                priceContext = "Hight To Lower";
             }
             return products;
         }
